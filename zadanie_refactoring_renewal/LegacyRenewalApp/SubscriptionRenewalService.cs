@@ -4,51 +4,74 @@ namespace LegacyRenewalApp;
 
 public class SubscriptionRenewalService
 {
-     
+
 
     public RenewalInvoice CreateRenewalInvoice(
-        int customerId,
-        string planCode,
-        int seatCount,
-        string paymentMethod,
-        bool includePremiumSupport,
-        bool useLoyaltyPoints)
+    int customerId,
+    string planCode,
+    int seatCount,
+    string paymentMethod,
+    bool includePremiumSupport,
+    bool useLoyaltyPoints)
     {
         InvoiceValidator.Validate(customerId,planCode,seatCount,paymentMethod);
+
+        string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
+        string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
+
+        var customerRepository = new CustomerRepository();
+        var planRepository = new SubscriptionPlanRepository();
+
+        var customer = customerRepository.GetById(customerId);
+        var plan = planRepository.GetByCode(normalizedPlanCode);
+
+        decimal baseAmount = (plan.MonthlyPricePerSeat * seatCount * 12m) + plan.SetupFee;
+        decimal discountAmount = 0m;
+        string notes = string.Empty;
+
+        CustomerValidator.customerValidate(customer, plan,discountAmount);
+
+        var discountResult = CustomerValidator.customerValidate(customer, plan, baseAmount);
+
+        discountAmount = discountResult.discountAmount;
+        notes += discountResult.notes;
+
+
+
+        decimal subtotalAfterDiscount = baseAmount - discountAmount; 
+        decimal supportFee = 0m;
+        decimal paymentFee = 0m;
+        decimal taxRate = 0.20m;
+        decimal taxBase = subtotalAfterDiscount + supportFee + paymentFee;
+        decimal taxAmount = taxBase * taxRate;
+        decimal finalAmount = taxBase + taxAmount;
+
+        var builder = new RenewalInvoiceBuilder();
+
+        RenewalInvoice renewalInvoice = new RenewalInvoice();
+
+        /** Using Builder to create whole Invoice
+        */
+        renewalInvoice = builder.SetIncoiveNumber("INV-+DateTime.UtcNow:yyyyMMdd-{customerId}-{normalizedPlanCode}")
+        .SetCustomerName(customer.FullName)
+        .SetPlanCode(normalizedPlanCode)
+        .SetPaymentMethod(normalizedPaymentMethod)
+        .SetSeatCount(seatCount)
+        .SetBaseAmount(Math.Round(baseAmount, 2, MidpointRounding.AwayFromZero))
+        .SetDiscountAmount(Math.Round(discountAmount, 2, MidpointRounding.AwayFromZero))
+        .SetSupportFee(Math.Round(supportFee, 2, MidpointRounding.AwayFromZero))
+        .SetPaymentFee(Math.Round(paymentFee, 2, MidpointRounding.AwayFromZero))
+        .SetTaxAmount(Math.Round(taxAmount, 2, MidpointRounding.AwayFromZero))
+        .SetFinalAmount(Math.Round(finalAmount, 2, MidpointRounding.AwayFromZero))
+        .SetNotes(notes.Trim())
+        .SetGeneratedAt(DateTime.UtcNow)
+        .Build();
         
-         string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
-         string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
-
-         var customerRepository = new CustomerRepository();
-         var planRepository = new SubscriptionPlanRepository();
-
-         var customer = customerRepository.GetById(customerId);
-         var plan = planRepository.GetByCode(normalizedPlanCode);
-         
-         
-            
-            var builder = new RenewalInvoiceBuilder();
-            RenewalInvoice renewalInvoice = new RenewalInvoice();
-            /** Using Builder to create whole Invoice
-             */
-            renewalInvoice = builder.SetIncoiveNumber("INV-+DateTime.UtcNow:yyyyMMdd-{customerId}-{normalizedPlanCode}")
-                .SetCustomerName(customer.FullName)
-                .SetPlanCode(normalizedPlanCode)
-                .SetPaymentMethod(normalizedPaymentMethod)
-                .SetSeatCount(seatCount)
-                .SetBaseAmount(Math.Round(baseAmount, 2, MidpointRounding.AwayFromZero))
-                .SetDiscountAmount(Math.Round(discountAmount, 2, MidpointRounding.AwayFromZero))
-                .SetSupportFee(Math.Round(supportFee, 2, MidpointRounding.AwayFromZero))
-                .SetPaymentFee(Math.Round(paymentFee, 2, MidpointRounding.AwayFromZero))
-                .SetTaxAmount(Math.Round(taxAmount, 2, MidpointRounding.AwayFromZero))
-                .SetFinalAmount(Math.Round(finalAmount, 2, MidpointRounding.AwayFromZero))
-                .SetNotes(notes.Trim())
-                .SetGeneratedAt(DateTime.UtcNow)
-                .Build();
-            //Return the final built invoice
-            return returnInvoice;
+        //Return the final built invoice
+        
+        return renewalInvoice;
     }
-            
+
 }
 
 
