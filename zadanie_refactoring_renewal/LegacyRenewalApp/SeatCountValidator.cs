@@ -2,7 +2,7 @@
 
 public class SeatCountValidator
 {
-    public static DiscountAndNotes seatCountValidate(int seatCount)
+    public static DiscountAndNotesAndTaxRate seatCountValidate(int seatCount)
     {
         decimal baseAmount = 0m;
         decimal discountAmount = 0m;
@@ -24,7 +24,7 @@ public class SeatCountValidator
                  notes += "small team discount; ";
              }
 
-        return new DiscountAndNotes
+        return new DiscountAndNotesAndTaxRate
         {
             discountAmount = discountAmount,
             notes = notes

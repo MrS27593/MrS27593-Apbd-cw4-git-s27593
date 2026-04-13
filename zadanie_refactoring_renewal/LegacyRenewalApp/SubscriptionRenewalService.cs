@@ -28,9 +28,12 @@ public class SubscriptionRenewalService
         CustomerValidator.customerValidate(customer, plan,discountAmount);
 
         var discountResult = CustomerValidator.customerValidate(customer, plan, baseAmount);
-
         discountAmount = discountResult.discountAmount;
         notes += discountResult.notes;
+        
+        var discountResult2 = SeatCountValidator.seatCountValidate(seatCount);
+        discountAmount += discountResult2.discountAmount;
+        notes +=discountResult2.notes;
 
         decimal subtotalAfterDiscount = baseAmount - discountAmount; 
         decimal supportFee = 0m;
@@ -99,91 +102,91 @@ public class SubscriptionRenewalService
 //             bool includePremiumSupport,
 //             bool useLoyaltyPoints)
 //         {
-//             if (customerId <= 0)
-//             {
-//                 throw new ArgumentException("Customer id must be positive");
-//             }
-//
-//             if (string.IsNullOrWhiteSpace(planCode))
-//             {
-//                 throw new ArgumentException("Plan code is required");
-//             }
-//
-//             if (seatCount <= 0)
-//             {
-//                 throw new ArgumentException("Seat count must be positive");
-//             }
-//
-//             if (string.IsNullOrWhiteSpace(paymentMethod))
-//             {
-//                 throw new ArgumentException("Payment method is required");
-//             }
-//
-//             string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
-//             string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
-//
-//             var customerRepository = new CustomerRepository();
-//             var planRepository = new SubscriptionPlanRepository();
-//
-//             var customer = customerRepository.GetById(customerId);
-//             var plan = planRepository.GetByCode(normalizedPlanCode);
-//
-//             if (!customer.IsActive)
-//             {
-//                 throw new InvalidOperationException("Inactive customers cannot renew subscriptions");
-//             }
-//
-//             decimal baseAmount = (plan.MonthlyPricePerSeat * seatCount * 12m) + plan.SetupFee;
-//             decimal discountAmount = 0m;
-//             string notes = string.Empty;
-//
-//             if (customer.Segment == "Silver")
-//             {
-//                 discountAmount += baseAmount * 0.05m;
-//                 notes += "silver discount; ";
-//             }
-//             else if (customer.Segment == "Gold")
-//             {
-//                 discountAmount += baseAmount * 0.10m;
-//                 notes += "gold discount; ";
-//             }
-//             else if (customer.Segment == "Platinum")
-//             {
-//                 discountAmount += baseAmount * 0.15m;
-//                 notes += "platinum discount; ";
-//             }
-//             else if (customer.Segment == "Education" && plan.IsEducationEligible)
-//             {
-//                 discountAmount += baseAmount * 0.20m;
-//                 notes += "education discount; ";
-//             }
-//
-//             if (customer.YearsWithCompany >= 5)
-//             {
-//                 discountAmount += baseAmount * 0.07m;
-//                 notes += "long-term loyalty discount; ";
-//             }
-//             else if (customer.YearsWithCompany >= 2)
-//             {
-//                 discountAmount += baseAmount * 0.03m;
-//                 notes += "basic loyalty discount; ";
-//             }
-//
-//             if (seatCount >= 50)
-//             {
-//                 discountAmount += baseAmount * 0.12m;
-//                 notes += "large team discount; ";
-//             }
-//             else if (seatCount >= 20)
-//             {
-//                 discountAmount += baseAmount * 0.08m;
-//                 notes += "medium team discount; ";
-//             }
-//             else if (seatCount >= 10)
-//             {
-//                 discountAmount += baseAmount * 0.04m;
-//                 notes += "small team discount; ";
-//             }
+                                                                                                                             // if (customerId <= 0)
+                                                                                                                             // {
+                                                                                                                             //     throw new ArgumentException("Customer id must be positive");
+                                                                                                                             // }
+                                                                                                                             //
+                                                                                                                             // if (string.IsNullOrWhiteSpace(planCode))
+                                                                                                                             // {
+                                                                                                                             //     throw new ArgumentException("Plan code is required");
+                                                                                                                             // }
+                                                                                                                             //
+                                                                                                                             // if (seatCount <= 0)
+                                                                                                                             // {
+                                                                                                                             //     throw new ArgumentException("Seat count must be positive");
+                                                                                                                             // }
+                                                                                                                             //
+                                                                                                                             // if (string.IsNullOrWhiteSpace(paymentMethod))
+                                                                                                                             // {
+                                                                                                                             //     throw new ArgumentException("Payment method is required");
+                                                                                                                             // }
+                                                                                                                            //
+                                                                                                                            //             string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
+                                                                                                                            //             string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
+                                                                                                                            //
+                                                                                                                            //             var customerRepository = new CustomerRepository();
+                                                                                                                            //             var planRepository = new SubscriptionPlanRepository();
+                                                                                                                            //
+                                                                                                                            //             var customer = customerRepository.GetById(customerId);
+                                                                                                                            //             var plan = planRepository.GetByCode(normalizedPlanCode);
+                                                                                                                            //
+                                                                                                                            //             if (!customer.IsActive)
+                                                                                                                            //             {
+                                                                                                                            //                 throw new InvalidOperationException("Inactive customers cannot renew subscriptions");
+                                                                                                                            //             }
+                                                                                                                            //
+                                                                                                                            //             decimal baseAmount = (plan.MonthlyPricePerSeat * seatCount * 12m) + plan.SetupFee;
+                                                                                                                            //             decimal discountAmount = 0m;
+                                                                                                                            //             string notes = string.Empty;
+                                                                                                                            //
+                                                                                                                            //             if (customer.Segment == "Silver")
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.05m;
+                                                                                                                            //                 notes += "silver discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Segment == "Gold")
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.10m;
+                                                                                                                            //                 notes += "gold discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Segment == "Platinum")
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.15m;
+                                                                                                                            //                 notes += "platinum discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Segment == "Education" && plan.IsEducationEligible)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.20m;
+                                                                                                                            //                 notes += "education discount; ";
+                                                                                                                            //             }
+                                                                                                                            //
+                                                                                                                            //             if (customer.YearsWithCompany >= 5)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.07m;
+                                                                                                                            //                 notes += "long-term loyalty discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.YearsWithCompany >= 2)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.03m;
+                                                                                                                            //                 notes += "basic loyalty discount; ";
+                                                                                                                            //             }
+                                                                                                                            //
+                                                                                                                            //             if (seatCount >= 50)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.12m;
+                                                                                                                            //                 notes += "large team discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (seatCount >= 20)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.08m;
+                                                                                                                            //                 notes += "medium team discount; ";
+                                                                                                                            //             }
+                                                                                                                            //             else if (seatCount >= 10)
+                                                                                                                            //             {
+                                                                                                                            //                 discountAmount += baseAmount * 0.04m;
+                                                                                                                            //                 notes += "small team discount; ";
+                                                                                                                            //             }
 //
 //             if (useLoyaltyPoints && customer.LoyaltyPoints > 0)
 //             {
@@ -219,6 +222,7 @@ public class SubscriptionRenewalService
 //             }
 //
 //             decimal paymentFee = 0m;
+
 //             if (normalizedPaymentMethod == "CARD")
 //             {
 //                 paymentFee = (subtotalAfterDiscount + supportFee) * 0.02m;
@@ -245,22 +249,22 @@ public class SubscriptionRenewalService
 //             }
 //
 //             decimal taxRate = 0.20m;
-//             if (customer.Country == "Poland")
-//             {
-//                 taxRate = 0.23m;
-//             }
-//             else if (customer.Country == "Germany")
-//             {
-//                 taxRate = 0.19m;
-//             }
-//             else if (customer.Country == "Czech Republic")
-//             {
-//                 taxRate = 0.21m;
-//             }
-//             else if (customer.Country == "Norway")
-//             {
-//                 taxRate = 0.25m;
-//             }
+                                                                                                                            //             if (customer.Country == "Poland")
+                                                                                                                            //             {
+                                                                                                                            //                 taxRate = 0.23m;
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Country == "Germany")
+                                                                                                                            //             {
+                                                                                                                            //                 taxRate = 0.19m;
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Country == "Czech Republic")
+                                                                                                                            //             {
+                                                                                                                            //                 taxRate = 0.21m;
+                                                                                                                            //             }
+                                                                                                                            //             else if (customer.Country == "Norway")
+                                                                                                                            //             {
+                                                                                                                            //                 taxRate = 0.25m;
+                                                                                                                            //             }
 //
 //             decimal taxBase = subtotalAfterDiscount + supportFee + paymentFee;
 //             decimal taxAmount = taxBase * taxRate;
