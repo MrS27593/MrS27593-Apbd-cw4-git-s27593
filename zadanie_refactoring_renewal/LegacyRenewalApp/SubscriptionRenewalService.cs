@@ -14,6 +14,8 @@ public class SubscriptionRenewalService
         bool includePremiumSupport,
         bool useLoyaltyPoints)
     {
+        InvoiceValidator.Validate(customerId,planCode,seatCount,paymentMethod);
+        
          string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
          string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
 
@@ -22,6 +24,7 @@ public class SubscriptionRenewalService
 
          var customer = customerRepository.GetById(customerId);
          var plan = planRepository.GetByCode(normalizedPlanCode);
+         
          
             
             var builder = new RenewalInvoiceBuilder();

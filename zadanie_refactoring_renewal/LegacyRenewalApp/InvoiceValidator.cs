@@ -3,7 +3,7 @@ namespace LegacyRenewalApp;
 
 public class InvoiceValidator
 {
-        public void Validate(int customerId, string planCode, int seatCount, string paymentMethod)
+        public static void Validate(int customerId, string planCode, int seatCount, string paymentMethod)
         {
             if (customerId <= 0)
                 throw new ArgumentException("Customer id must be positive");
