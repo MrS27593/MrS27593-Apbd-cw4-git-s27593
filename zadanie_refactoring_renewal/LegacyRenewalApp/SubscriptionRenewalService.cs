@@ -34,6 +34,8 @@ public class SubscriptionRenewalService
         var discountResult2 = SeatCountValidator.seatCountValidate(seatCount);
         discountAmount += discountResult2.discountAmount;
         notes +=discountResult2.notes;
+        
+        
 
         decimal subtotalAfterDiscount = baseAmount - discountAmount; 
         decimal supportFee = 0m;
