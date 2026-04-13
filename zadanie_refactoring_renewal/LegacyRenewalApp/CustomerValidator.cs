@@ -4,10 +4,11 @@ namespace LegacyRenewalApp;
 
 public class CustomerValidator
 {
-    public static DiscountAndNotes customerValidate(Customer customer, SubscriptionPlan plan,decimal baseAmount)
+    public static DiscountAndNotesAndTaxRate customerValidate(Customer customer, SubscriptionPlan plan,decimal baseAmount)
     {
         decimal discountAmount = 0m;
         string notes = "";
+        decimal taxRate = 0m;
         
             if (!customer.IsActive)
              {
@@ -44,10 +45,29 @@ public class CustomerValidator
                  discountAmount += baseAmount * 0.03m;
                  notes += "basic loyalty discount; ";
              }
-             return new DiscountAndNotes
+             
+            if (customer.Country == "Poland")
+             {
+                 taxRate = 0.23m;
+             }
+             else if (customer.Country == "Germany")
+             {
+                 taxRate = 0.19m;
+             }
+             else if (customer.Country == "Czech Republic")
+             {
+                 taxRate = 0.21m;
+             }
+             else if (customer.Country == "Norway")
+             {
+                 taxRate = 0.25m;
+             }
+             
+             return new DiscountAndNotesAndTaxRate
              {
                  discountAmount = discountAmount,
-                 notes = notes
+                 notes = notes,
+                 taxRate = taxRate
              };
              
     }

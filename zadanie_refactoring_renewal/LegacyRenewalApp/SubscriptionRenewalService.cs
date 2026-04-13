@@ -1,11 +1,7 @@
 using System;
-
 namespace LegacyRenewalApp;
-
 public class SubscriptionRenewalService
 {
-
-
     public RenewalInvoice CreateRenewalInvoice(
     int customerId,
     string planCode,
@@ -36,8 +32,6 @@ public class SubscriptionRenewalService
         discountAmount = discountResult.discountAmount;
         notes += discountResult.notes;
 
-
-
         decimal subtotalAfterDiscount = baseAmount - discountAmount; 
         decimal supportFee = 0m;
         decimal paymentFee = 0m;
@@ -52,7 +46,7 @@ public class SubscriptionRenewalService
 
         /** Using Builder to create whole Invoice
         */
-        renewalInvoice = builder.SetIncoiveNumber("INV-+DateTime.UtcNow:yyyyMMdd-{customerId}-{normalizedPlanCode}")
+        renewalInvoice = builder.SetIncoiveNumber($"INV-{DateTime.UtcNow:yyyyMMdd}-{customerId}-{normalizedPlanCode}")
         .SetCustomerName(customer.FullName)
         .SetPlanCode(normalizedPlanCode)
         .SetPaymentMethod(normalizedPaymentMethod)
