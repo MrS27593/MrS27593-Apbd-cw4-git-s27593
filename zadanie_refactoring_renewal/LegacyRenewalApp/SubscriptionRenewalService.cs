@@ -4,8 +4,65 @@ namespace LegacyRenewalApp;
 
 public class SubscriptionRenewalService
 {
-    public 
+     
+
+    public RenewalInvoice CreateRenewalInvoice(
+        int customerId,
+        string planCode,
+        int seatCount,
+        string paymentMethod,
+        bool includePremiumSupport,
+        bool useLoyaltyPoints)
+    {
+         string normalizedPlanCode = planCode.Trim().ToUpperInvariant();
+         string normalizedPaymentMethod = paymentMethod.Trim().ToUpperInvariant();
+
+         var customerRepository = new CustomerRepository();
+         var planRepository = new SubscriptionPlanRepository();
+
+         var customer = customerRepository.GetById(customerId);
+         var plan = planRepository.GetByCode(normalizedPlanCode);
+         
+            
+            var builder = new RenewalInvoiceBuilder();
+            RenewalInvoice renewalInvoice = new RenewalInvoice();
+            /** Using Builder to create whole Invoice
+             */
+            renewalInvoice = builder.SetIncoiveNumber("INV-+DateTime.UtcNow:yyyyMMdd-{customerId}-{normalizedPlanCode}")
+                .SetCustomerName(customer.FullName)
+                .SetPlanCode(normalizedPlanCode)
+                .SetPaymentMethod(normalizedPaymentMethod)
+                .SetSeatCount(seatCount)
+                .SetBaseAmount(Math.Round(baseAmount, 2, MidpointRounding.AwayFromZero))
+                .SetDiscountAmount(Math.Round(discountAmount, 2, MidpointRounding.AwayFromZero))
+                .SetSupportFee(Math.Round(supportFee, 2, MidpointRounding.AwayFromZero))
+                .SetPaymentFee(Math.Round(paymentFee, 2, MidpointRounding.AwayFromZero))
+                .SetTaxAmount(Math.Round(taxAmount, 2, MidpointRounding.AwayFromZero))
+                .SetFinalAmount(Math.Round(finalAmount, 2, MidpointRounding.AwayFromZero))
+                .SetNotes(notes.Trim())
+                .SetGeneratedAt(DateTime.UtcNow)
+                .Build();
+            //Return the final built invoice
+            return returnInvoice;
+    }
+            
 }
+
+
+//                 InvoiceNumber = $"INV-{DateTime.UtcNow:yyyyMMdd}-{customerId}-{normalizedPlanCode}",
+//                 CustomerName = customer.FullName,
+//                 PlanCode = normalizedPlanCode,
+//                 PaymentMethod = normalizedPaymentMethod,
+//                 SeatCount = seatCount,
+//                 BaseAmount = Math.Round(baseAmount, 2, MidpointRounding.AwayFromZero),
+//                 DiscountAmount = Math.Round(discountAmount, 2, MidpointRounding.AwayFromZero),
+//                 SupportFee = Math.Round(supportFee, 2, MidpointRounding.AwayFromZero),
+//                 PaymentFee = Math.Round(paymentFee, 2, MidpointRounding.AwayFromZero),
+//                 TaxAmount = Math.Round(taxAmount, 2, MidpointRounding.AwayFromZero),
+//                 FinalAmount = Math.Round(finalAmount, 2, MidpointRounding.AwayFromZero),
+//                 Notes = notes.Trim(),
+//                 GeneratedAt = DateTime.UtcNow
+//             };
 
 
 // using System;
